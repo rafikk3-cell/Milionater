@@ -1,0 +1,50 @@
+*{
+    box-sizing: border-box;
+}
+
+
+img {
+    width: 100%
+}
+
+body {
+    margin: 0;
+    color:"red"
+       font-family "Montserat","sans-serif";
+
+}
+
+.start-btn{
+    outline: none;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 40px ;
+    cursor: pointer;
+    font-size: 18px;
+    background: "green";
+    color: blue;
+    text-shadow: 3px 3px 4px "black";
+    text-transform: uppercase;
+    box-shadow: 00 10px 0px rgb(255, 255, 255);
+    display: block;
+    margin-top: 260px;
+    transition: 1s;
+}
+.information{
+    position: apsolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: rgb(200, 100, 50);
+    color: white;
+    border:none;
+    border-radius: 8px;
+    cursor:pointer;
+    font-size: 18px;
+    text-transform: uppercase;
+    z-index: 10;
+}
+.start-btn:hower{
+    box-shadow: 0 0 15px rgb(red);
+    transform: scale(1,2);
+}
