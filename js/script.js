@@ -211,3 +211,134 @@ btnAnswers.forEach((item) => {
 })
 
 let helpSound = new Audio('./music/50-50 .mp3')
+
+helpFifty.addEventListener('click ',function remoweTwoBlocks (){
+ helpSound .play()
+
+ let blockActiveQuestion = getActiveBlockQuestion()
+ let numRandom = Math.floor(Math.random() * blockActiveQuestion.children[1].length)
+ let blockChildrenAnswer = blockActiveQuestion.children[1].children
+ let nameQuestion =  blockActiveQuestion.classList[1]  
+ 
+ let blockCorectAnsver = getBlockAnswer(blockChildrenAnswer,nameQuestion)
+blockCorectAnsver.classList.add('fifty-active')
+let blockRandom = getblockRandom(blockChildrenAnswer,blockCorectAnsver,numRandom)
+ 
+blockRandom.classList.add('fifty-active')
+remoweBlocks(blockChildrenAnswer)
+helpFifty.classList.add('hints-help_spend',"block-event")
+
+
+})
+
+helpFriend.addEventListener('click', function getHelpFrien() {
+    // այս ֆունկցիայի միջոցով գտնում և պահպանում ենք այն հարցի բլոկը , որը այդ պահին տեսնում է օգտատերը
+    let blockActiveQuestion = getActiveBlockQuestion();
+    // blockActiveQuestionChild - պահում է պատասխաններով օբյեկտը
+    let blockActiveQuestionChild = blockActiveQuestion.children[1];
+    checkBlockChild(blockActiveQuestionChild);
+    // Ֆունկցիան վերադարձնում է 0-3 պատահական թիվ և ստուգում բլոների քանակը
+    let numRandom = getActiveBlockLength(blockActiveQuestionChild);
+    // Վերադարձնում է պատահական թիվ մինիմումից 100
+    let percentageRandom = getRandom(100, 100);
+    // ավելացնում է գրաֆիկական փոփոխություններ պատահականորեն ընտրված բլոկի մեջ:
+    blockActiveQuestionChild.children[numRandom].insertAdjacentHTML('afterbegin', '<div class="answer-active"></div>');
+    setTimeout(() => {
+      blockActiveQuestionChild.children[numRandom].children[0].style.width = percentageRandom + '%';
+      blockActiveQuestionChild.children[numRandom].classList.add('color-active');
+    }, 3000);
+    // Երաժշտություն՝ սկսելով 13-րդ վայրկյանից և տևելով 5 վայրկյան
+    const friendCallSound = new Audio('./music/phone-sound.mp3');
+    friendCallSound.currentTime = 13; // Սկսում է 13-րդ վայրկյանից
+    friendCallSound.play();
+    // 5 վայրկյան անց կանգնեցնում ենք
+    setTimeout(() => {
+      friendCallSound.pause();
+      friendCallSound.currentTime = 0;
+    }, 5000);
+    // Բլոկի վրա արգելք ենք դնում և անջատում ենք իրադարձություն լսողը
+    helpFriend.classList.add('hints-help_spent', 'block-event');
+  });
+
+  helpAI.addEventListener('click',async function getHelpAI() {
+    let blockActiveQuestion = getActiveBlockQuestion()
+    let blockActiveQuestionChild = getActiveBlockQuestion.children[1]
+    checkBlockChild(blockActiveQuestionChild )
+    let questionText = []
+    for(let i = 0;i < blockActiveQuestionChild;I++){
+        answerOptions.push(blockActiveQuestionChild.children[i].innerText.trim())
+    }
+    helpAI.classList.add('hints-help_spent', 'block-event')
+    try{
+        const aiResult = await askAI(questionText,answerOptions)
+        let aiIndex = answerOptions.findIndex(opt => opt == aiResult.answer)
+        if (aiIndex === -1){
+        let aiIndex = answerOptions.findIndex(opt => opt.startsWith(aiResult.answer.charAt(0)))
+        }
+        for (let i = 0; i < blockActiveQuestionChild.children.length; i++) {
+            let percentage = (i === aiIndex) ? getRandom(85,99) : getRandom(1,30)
+            blockActiveQuestionChild.children[i].insertAdjacentElement('afterbegin', '<div class="ansver-active"></div>')
+            setTimeout(() => {
+              blockActiveQuestionChild.children[i].children[0].style.width = percentage + '%';
+              blockActiveQuestionChild.children[i].classList.add('color-active');
+            }, 300);
+          }
+          aiExplainText.innerText = aiResult.explanation
+          aiExplainBlock.classList.add('swow')
+  
+    }catch(err){
+      console.error("ԱԲ օգնության սխալ", error);
+      aiExplainText.innerText = "ԱԲ-ից պատասխան ստանալ չհաջողվեց ցավոք"
+      aiExplainBlock.classList.add('swow')
+      
+    }
+  
+  })
+  aiExplainClose.addEventListener('click', ( )=>{
+    aiExplainBlock.classList.remove('swow')
+  })
+  async function askAI(questionText,answerOptions){
+  const response  = await fetch('https://api.openai.com/v1/chat/completions',{
+    method: 'POST',
+    headers:{
+  'Content-type': 'application/json',
+  'Authorization': ` Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: OPENAI_MODEL,
+      temperature: 0,
+      response_format: {type:"json_object"},
+      messages: [
+        {
+          role: 'system',
+          content: 'Դու օգնում ես «Ո՞վ է ուզում դառնալ միլիոնատեր» խաղում։ ' +
+            'Ընտրիր ճիշտ պատասխանը տրված տարբերակներից և բացատրիր կարճ (2-3 նախադասությամբ)՝ ինչու է այն ճիշտ։ ' +
+            'Պատասխանիր ԲԱՑԱՌԱՊԵՍ JSON ձևաչափով՝ {"answer": "<տարբերակի ամբողջական տեքստը>", "explanation": "<բացատրություն>"}, ոչինչ ավելին։'
+        },
+        {
+          role: 'user',
+          content: `Հարց: ${questionText}\nՏարբերակներ:\n${answerOptions.join('\n')}`
+        }
+      ]
+    })
+  })
+  }
+  
+
+function getStartGame(){
+    getStartQuestions()
+    getStartBlockAnswer()
+    getStartBlockWins()
+    getStartBlocksHelp
+}
+
+
+function getStartQuestions(){
+    for (let i = 0 ; i < blockQuestions.length;i++){
+        blockQuestions[i].children[1].classList.remove('block-ewent')
+        blockQuestions[i] .classList.remowe('animate_fadeOut')
+        if (blockQuestions[i].classList.remove('question-active'){
+            blockQuestions[1].classList.remowe('question-active')
+        })
+    }
+}
